@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "nombre": "Laura Martínez",
+    "usuario": "lmartinez",
+    "password": "1234",
+    "email": "laura.martinez@hospital.com",
+    "turno": "mañana",
+    "especialidad": "Pediatría"
+  },
+  {
+    "id": 2,
+    "nombre": "Carlos Gómez",
+    "usuario": "cgomez",
+    "password": "abcd",
+    "email": "carlos.gomez@hospital.com",
+    "turno": "tarde",
+    "especialidad": "Urgencias"
+  },
+  {
+    "id": 3,
+    "nombre": "María López",
+    "usuario": "mlopez",
+    "password": "maria123",
+    "email": "maria.lopez@hospital.com",
+    "turno": "noche",
+    "especialidad": "Cardiología"
+  },
+  {
+    "id": 4,
+    "nombre": "Javier Ruiz",
+    "usuario": "jruiz",
+    "password": "pass456",
+    "email": "javier.ruiz@hospital.com",
+    "turno": "mañana",
+    "especialidad": "Oncología"
+  },
+  {
+    "id": 5,
+    "nombre": "Lucía Sánchez",
+    "usuario": "lsanchez",
+    "password": "lucia789",
+    "email": "lucia.sanchez@hospital.com",
+    "turno": "tarde",
+    "especialidad": "Geriatría"
+  },
+  {
+    "id": 6,
+    "nombre": "Antonio Fernández",
+    "usuario": "afernandez",
+    "password": "tony22",
+    "email": "antonio.fernandez@hospital.com",
+    "turno": "noche",
+    "especialidad": "Traumatología"
+  },
+  {
+    "id": 7,
+    "nombre": "Beatriz Navarro",
+    "usuario": "bnavarro",
+    "password": "bea2025",
+    "email": "beatriz.navarro@hospital.com",
+    "turno": "mañana",
+    "especialidad": "Neurología"
+  },
+  {
+    "id": 8,
+    "nombre": "David Morales",
+    "usuario": "dmorales",
+    "password": "davidpass",
+    "email": "david.morales@hospital.com",
+    "turno": "tarde",
+    "especialidad": "Psiquiatría"
+  },
+  {
+    "id": 9,
+    "nombre": "Patricia Vega",
+    "usuario": "pvega",
+    "password": "patri321",
+    "email": "patricia.vega@hospital.com",
+    "turno": "noche",
+    "especialidad": "UCI"
+  },
+  {
+    "id": 10,
+    "nombre": "Sergio Castillo",
+    "usuario": "scastillo",
+    "password": "sergio00",
+    "email": "sergio.castillo@hospital.com",
+    "turno": "mañana",
+    "especialidad": "Medicina Interna"
+  }
+]
