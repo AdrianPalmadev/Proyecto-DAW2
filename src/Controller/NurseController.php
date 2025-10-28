@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\NurseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,62 +21,64 @@ final class NurseController extends AbstractController
     }
 
     #[Route('/login', name: 'app_nurse_login', methods: ['POST'])]
-    public function login(Request $request)
+    public function login(Request $request, NurseRepository $repo): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = $request->toArray();
+
         $usuario = $data['usuario'] ?? null;
         $password = $data['password'] ?? null;
 
-        $json = file_get_contents($this->getParameter('kernel.project_dir') . '/public/nurses.json');
-
-        $data = json_decode($json, true); // <- ojo, el true hace que sea array
-
-        $encuentro = null;
-        foreach ($data as $nurse) {
-            if ($nurse['usuario'] === $usuario && $nurse['password'] === $password) {
-                $encuentro = $nurse;
-                break;
-            }
+        if (empty($usuario) || empty($password)) {
+            return $this->json(['message' => 'usuario y password obligatorios'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ($encuentro == null) {
-            return $this->json($encuentro, status: Response::HTTP_UNAUTHORIZED);
+        $nurse = $repo->login($usuario, $password);
+
+        if (!$nurse) {
+            return $this->json(['message' => 'No encontrado o credenciales incorrectas'], Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($encuentro, status: Response::HTTP_OK);
+        return $this->json([
+            'id' => $nurse->getId(),
+            'usuario' => $nurse->getUser(),
+            'nombre' => $nurse->getName(),
+        ]);
     }
 
+
     #[Route('/index', name: 'app_nurse_getall', methods: ['GET'])]
-    public function getAll()
+    public function getAll(NurseRepository $repo)
     {
-        $json = file_get_contents($this->getParameter('kernel.project_dir') . '/public/nurses.json');
+        $nurses = $repo->getAll(); // o findAll() si usas Doctrine directamente
 
-        $data = json_decode($json);
+        $data = [];
 
-        return $this->json($data, Response::HTTP_OK);
+        foreach ($nurses as $nurse) {
+            $data[] = [
+                'id' => $nurse->getId(),
+                'usuario' => $nurse->getUser(),
+                'nombre' => $nurse->getName(),
+                'email' => $nurse->getEmail(),
+                'trabajando' => $nurse->isWorking(),
+            ];
+        }
+
+        return $this->json($data);
     }
 
     #[Route('/name/{usuario}', name: 'app_nurse_findbyname', methods: ['GET'])]
-    public function findByName($usuario)
+    public function findByUser(string $usuario, NurseRepository $repo): JsonResponse
     {
+        $nurse = $repo->findByUser($usuario);
 
-        $path = $this->getParameter('kernel.project_dir') . '/public/nurses.json';
-
-        $json = file_get_contents($path);
-        $data = json_decode($json, true);
-
-        $encuentro = null;
-        foreach ($data as $nurse) {
-            if ($nurse['usuario'] === $usuario) {
-                $encuentro = $nurse;
-                break;
-            }
+        if (!$nurse) {
+            return $this->json(['message' => 'No encontrado'], Response::HTTP_NOT_FOUND);
         }
 
-        if ($encuentro == null) {
-            return $this->json($encuentro, status: Response::HTTP_NOT_FOUND);
-        }
-
-        return $this->json($encuentro, status: Response::HTTP_OK);
+        return $this->json([
+            'id' => $nurse->getId(),
+            'usuario' => $nurse->getUser(),
+            'nombre' => $nurse->getName(),
+        ]);
     }
 }
