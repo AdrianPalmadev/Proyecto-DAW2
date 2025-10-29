@@ -24,6 +24,14 @@ class NurseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    public function findById(int $id): ?Nurse
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.id = :u')
+            ->setParameter('u', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
     public function getAll(): array
     {
@@ -46,5 +54,29 @@ class NurseRepository extends ServiceEntityRepository
         }
 
         return null;
+    }
+
+    public function create(Nurse $nurse): Nurse
+    {
+        $em = $this->getEntityManager();
+        $em->persist($nurse);
+        $em->flush();
+        return $nurse;
+    }
+
+    public function delete(Nurse $nurse)
+    {
+        $em = $this->getEntityManager();
+        $em->remove($nurse);
+        $em->flush();
+    }
+
+    public function edit(Nurse $nurse)
+    {
+        $em = $this->getEntityManager();
+        $em->persist($nurse);
+        $em->flush();
+
+        return $nurse;
     }
 }

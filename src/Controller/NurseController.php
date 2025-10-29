@@ -81,4 +81,77 @@ final class NurseController extends AbstractController
             'nombre' => $nurse->getName(),
         ]);
     }
+
+    #[Route('/register', name: 'app_nurse_register', methods: ['POST'])]
+    public function create(Request $request, NurseRepository $repo): JsonResponse
+    {
+        $data = $request->toArray();
+
+        $name = $data['name'] ?? null;
+        $usuario = $data['usuario'] ?? null;
+        $password = $data['password'] ?? null;
+        $email = $data['email'] ?? null;
+        $working = $data['working'] ?? false;
+
+        if (!$name || !$usuario || !$password || !$email) {
+            return $this->json(['message' => 'Faltan campos obligatorios'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $nurse = new \App\Entity\Nurse();
+        $nurse->setName($name);
+        $nurse->setUser($usuario);
+        $nurse->setPassword($password);
+        $nurse->setEmail($email);
+        $nurse->setWorking($working);
+
+        $repo->create($nurse);
+
+        return $this->json([
+            'message' => 'Nurse creada correctamente',
+            "name: " => $nurse->getName()
+        ], Response::HTTP_CREATED);
+    }
+
+    #[Route(path: '/delete/{id}', name: 'app_nurse_register', methods: ['GET'])]
+    public function delete(int $id, NurseRepository $repo): JsonResponse
+    {
+
+        $nurse = $repo->findById($id);
+
+        if (!$nurse) {
+            return $this->json(['message' => 'Nurse no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
+        $repo->delete($nurse);
+
+        return $this->json(['message' => 'Se ha eliminado correctamente a ' . $nurse->getName()], Response::HTTP_OK);
+    }
+
+    #[Route(path: '/edit/{id}', name: 'app_nurse_register', methods: ['POST'])]
+    public function edit(Request $request, int $id, NurseRepository $repo)
+    {
+        $nurse = $repo->findById($id);
+
+        if (!$nurse) {
+            return $this->json(['message' => 'Nurse no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $request->toArray();
+
+
+        $name = $data['name'] ?? $nurse->getName();
+        $usuario = $data['usuario'] ?? $nurse->getUser();
+        $password = $data['password'] ?? $nurse->getPassword();
+        $email = $data['email'] ?? $nurse->getEmail();
+        $working = $data['working'] ?? $nurse->isWorking();
+        $nurse->setName($name);
+        $nurse->setUser($usuario);
+        $nurse->setPassword($password);
+        $nurse->setEmail($email);
+        $nurse->setWorking($working);
+
+        $repo->edit($nurse);
+
+        return $this->json(['message' => 'Nurse actualizado correctamente']);
+    }
 }
