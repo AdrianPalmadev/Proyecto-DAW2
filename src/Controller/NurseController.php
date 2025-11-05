@@ -12,14 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 #[Route('/nurse', name: 'app_nurse')]
 final class NurseController extends AbstractController
 {
-    public function index(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/NurseController.php',
-        ]);
-    }
-
     #[Route('/login', name: 'app_nurse_login', methods: ['POST'])]
     public function login(Request $request, NurseRepository $repo): JsonResponse
     {
@@ -66,10 +58,10 @@ final class NurseController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/name/{usuario}', name: 'app_nurse_findbyname', methods: ['GET'])]
-    public function findByUser(string $usuario, NurseRepository $repo): JsonResponse
+    #[Route('/user/{user}', name: 'app_nurse_findbyuser', methods: ['GET'])]
+    public function findByUser(string $user, NurseRepository $repo): JsonResponse
     {
-        $nurse = $repo->findByUser($usuario);
+        $nurse = $repo->findByUser($user);
 
         if (!$nurse) {
             return $this->json(['message' => 'No encontrado'], Response::HTTP_NOT_FOUND);
@@ -83,7 +75,7 @@ final class NurseController extends AbstractController
     }
 
     #[Route('/register', name: 'app_nurse_register', methods: ['POST'])]
-    public function create(Request $request, NurseRepository $repo): JsonResponse
+    public function register(Request $request, NurseRepository $repo): JsonResponse
     {
         $data = $request->toArray();
 
@@ -97,6 +89,10 @@ final class NurseController extends AbstractController
             return $this->json(['message' => 'Faltan campos obligatorios'], Response::HTTP_BAD_REQUEST);
         }
 
+        if ($repo->findByUser($usuario)) {
+            return $this->json(['message' => 'El usuario ya existe'], Response::HTTP_BAD_REQUEST);
+        }
+
         $nurse = new \App\Entity\Nurse();
         $nurse->setName($name);
         $nurse->setUser($usuario);
@@ -108,18 +104,22 @@ final class NurseController extends AbstractController
 
         return $this->json([
             'message' => 'Nurse creada correctamente',
-            "name: " => $nurse->getName()
+            "name:" => $nurse->getName()
         ], Response::HTTP_CREATED);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_nurse_register', methods: ['GET'])]
-    public function delete(int $id, NurseRepository $repo): JsonResponse
+    #[Route(path: '/delete', name: 'app_nurse_delete', methods: ['DELETE'])]
+    public function delete(Request $request, NurseRepository $repo): JsonResponse
     {
 
-        $nurse = $repo->findById($id);
+        $data = $request->toArray();
+
+        $user = $data['usuario'] ?? null;
+
+        $nurse = $repo->findByUser($user);
 
         if (!$nurse) {
-            return $this->json(['message' => 'Nurse no encontrado'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Nurse con el user ' . $user . ' no encontrado'], Response::HTTP_NOT_FOUND);
         }
 
         $repo->delete($nurse);
@@ -127,17 +127,16 @@ final class NurseController extends AbstractController
         return $this->json(['message' => 'Se ha eliminado correctamente a ' . $nurse->getName()], Response::HTTP_OK);
     }
 
-    #[Route(path: '/edit/{id}', name: 'app_nurse_register', methods: ['POST'])]
-    public function edit(Request $request, int $id, NurseRepository $repo)
+    #[Route(path: '/edit/{user}', name: 'app_nurse_edit', methods: ['PUT'])]
+    public function edit(Request $request, string $user, NurseRepository $repo)
     {
-        $nurse = $repo->findById($id);
+        $nurse = $repo->findByUser($user);
 
         if (!$nurse) {
-            return $this->json(['message' => 'Nurse no encontrado'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Nurse con el user ' . $user . ' no encontrado'], Response::HTTP_NOT_FOUND);
         }
 
         $data = $request->toArray();
-
 
         $name = $data['name'] ?? $nurse->getName();
         $usuario = $data['usuario'] ?? $nurse->getUser();
