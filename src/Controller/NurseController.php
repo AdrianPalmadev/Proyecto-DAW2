@@ -74,8 +74,8 @@ final class NurseController extends AbstractController
         ]);
     }
 
-    #[Route('/register', name: 'app_nurse_register', methods: ['POST'])]
-    public function register(Request $request, NurseRepository $repo): JsonResponse
+    #[Route('/create', name: 'app_nurse_create', methods: ['POST'])]
+    public function create(Request $request, NurseRepository $repo): JsonResponse
     {
         $data = $request->toArray();
 
@@ -108,8 +108,8 @@ final class NurseController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route(path: '/delete', name: 'app_nurse_delete', methods: ['DELETE'])]
-    public function delete(Request $request, NurseRepository $repo): JsonResponse
+    #[Route(path: '/remove', name: 'app_nurse_remove', methods: ['DELETE'])]
+    public function remove(Request $request, NurseRepository $repo): JsonResponse
     {
 
         $data = $request->toArray();
