@@ -1,81 +1,80 @@
 # Proyecto Backend de Enfermeros – Symfony API
 
-## Descripción del Proyecto
-Este proyecto consiste en el desarrollo de un backend en Symfony que expone una API para la gestión de enfermeros.  
-Incluye operaciones CRUD, conexión a base de datos mediante Doctrine, pruebas unitarias, integración continua con GitHub Actions y documentación técnica.  
-El objetivo es comprender el funcionamiento de un backend profesional utilizando PHP y Symfony.
+## Project Description
+This project consists of developing a Symfony backend that exposes an API for nurse management.  
+It includes CRUD operations, database connection through Doctrine, unit testing, continuous integration with GitHub Actions, and technical documentation.  
+The goal is to understand how a professional backend works using PHP and Symfony.
 
 ---
 
-## Tecnologías Utilizadas
+## Technologies Used
 - Symfony
 - PHP
 - Composer
 - MySQL / MariaDB
 - Doctrine ORM
 - PHPUnit
-- Git y GitHub Actions
+- Git and GitHub Actions
 
 ---
 
-## Instalación y Configuración
-El proyecto requiere clonar el repositorio, instalar las dependencias necesarias y configurar el archivo de entorno para establecer la conexión con la base de datos.  
-Posteriormente se debe crear la base de datos y aplicar las migraciones generadas por Doctrine para preparar el esquema.
+## Installation and Configuration
+The project requires cloning the repository, installing all necessary dependencies, and configuring the environment file to establish the database connection.  
+After that, the database must be created and Doctrine migrations applied to prepare the schema.
 
 ---
 
-## Uso del Proyecto
-Symfony permite ejecutar un servidor de desarrollo para acceder a la API localmente.  
-Una vez en funcionamiento, la API ofrece las funcionalidades necesarias para gestionar enfermeros, realizar validaciones y obtener información desde la base de datos.
+## Project Usage
+Symfony allows running a development server to access the API locally.  
+Once running, the API provides all required functionalities to manage nurses, perform validations, and retrieve database information.
 
 ---
 
-## Pruebas Unitarias
-El proyecto incorpora pruebas unitarias mediante PHPUnit, centradas en las funciones principales del controlador y la lógica de negocio.  
-Estas pruebas verifican tanto resultados correctos como errores previstos, garantizando un funcionamiento estable y predecible.
+## Unit Testing
+The project includes unit tests using PHPUnit, focused on the main controller functions and business logic.  
+These tests verify both correct results and expected errors, ensuring stable and predictable behavior.
 
 ---
 
-## Integración Continua (CI)
-Se ha configurado un flujo de trabajo en GitHub Actions que ejecuta automáticamente las pruebas unitarias cada vez que se realizan cambios en el repositorio.  
-Esto asegura que el código mantenga su calidad y permite detectar errores de manera temprana durante el desarrollo.
+## Continuous Integration (CI)
+A GitHub Actions workflow has been configured to automatically execute unit tests whenever changes are pushed to the repository.  
+This ensures code quality and allows early detection of issues during development.
 
 ---
 
-## Base de Datos
+## Database
 
-### Diseño
-El modelo lógico de la base de datos fue diseñado utilizando MySQL Workbench, definiendo la estructura necesaria para almacenar y gestionar enfermeros.
+### Design
+The logical structure of the database was designed using MySQL Workbench, defining the schema required to store and manage nurses.
 
-### Implementación con Doctrine
-Una vez configurado Doctrine, se generaron las entidades y migraciones para sincronizar el diseño con Symfony.  
-El resultado fue comparado con el modelo inicial para asegurar que la estructura fuera la esperada.
+### Implementation with Doctrine
+After configuring Doctrine, the entities and migrations were generated to synchronize the database model with Symfony.  
+The result was compared to the initial design to ensure consistency.
 
-### Pruebas en entorno local y remoto
-El proyecto fue probado tanto con una base de datos local como con una base de datos centralizada alojada en un servidor externo.  
-De esta manera, se validó su funcionamiento en diferentes entornos.
-
----
-
-## Documentación Técnica
-Se ha elaborado documentación detallada que incluye:
-
-- El diseño final del modelo de datos  
-- Explicación completa del CRUD implementado  
-- Validaciones realizadas mediante Postman  
-- Evidencias del funcionamiento del pipeline de integración continua  
-- Comparación entre el modelo teórico y el generado por Doctrine  
-- Uso del repositorio y gestión de incidencias  
+### Local and Remote Testing
+The project was tested using both a local database and an external centralized database.  
+This validated correct behavior in different environments.
 
 ---
 
-## Enlace al Repositorio
-[https://github.com/AdrianPalmadev/Proyecto-DAW2
-](https://github.com/AdrianPalmadev/Proyecto-DAW2)
+## Technical Documentation
+Comprehensive documentation has been created, including:
+
+- Final database model  
+- Full explanation of the implemented CRUD  
+- Postman validation tests  
+- Evidence of the CI pipeline  
+- Comparison between theoretical model and Doctrine-generated model  
+- Repository usage and issue tracking  
 
 ---
 
-## Autor
+## Repository Link
+[https://github.com/AdrianPalmadev/Proyecto-DAW2](https://github.com/AdrianPalmadev/Proyecto-DAW2)
+
+---
+
+## Author
 **Adrián Palma**
 
-Proyecto desarrollado de forma individual.
+Individually developed project.
