@@ -127,13 +127,13 @@ final class NurseController extends AbstractController
         return $this->json(['message' => 'Se ha eliminado correctamente a ' . $nurse->getName()], Response::HTTP_OK);
     }
 
-    #[Route(path: '/edit/{user}', name: 'app_nurse_edit', methods: ['PUT'])]
-    public function edit(Request $request, string $user, NurseRepository $repo)
+    #[Route(path: '/edit/{id}', name: 'app_nurse_edit', methods: ['PUT'])]
+    public function edit(Request $request, int $id, NurseRepository $repo)
     {
-        $nurse = $repo->findByUser($user);
+        $nurse = $repo->findById($id);
 
         if (!$nurse) {
-            return $this->json(['message' => 'Nurse con el user ' . $user . ' no encontrado'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Nurse con el id ' . $id . ' no encontrado'], Response::HTTP_NOT_FOUND);
         }
 
         $data = $request->toArray();
