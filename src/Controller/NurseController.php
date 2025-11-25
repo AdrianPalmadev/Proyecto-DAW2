@@ -58,10 +58,10 @@ final class NurseController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/name/{name}', name: 'app_nurse_findbyuser', methods: ['GET'])]
-    public function findByUser(string $name, NurseRepository $repo): JsonResponse
+    #[Route('/name/{name}', name: 'app_nurse_findByName', methods: ['GET'])]
+    public function findByName(string $name, NurseRepository $repo): JsonResponse
     {
-        $nurse = $repo->findByUser($name);
+        $nurse = $repo->findByName($name);
 
         if (!$nurse) {
             return $this->json(['message' => 'No encontrado'], Response::HTTP_NOT_FOUND);
@@ -89,7 +89,7 @@ final class NurseController extends AbstractController
             return $this->json(['message' => 'Faltan campos obligatorios'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ($repo->findByUser($usuario)) {
+        if ($repo->findByName($usuario)) {
             return $this->json(['message' => 'El usuario ya existe'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -116,7 +116,7 @@ final class NurseController extends AbstractController
 
         $user = $data['usuario'] ?? null;
 
-        $nurse = $repo->findByUser($user);
+        $nurse = $repo->findByName($user);
 
         if (!$nurse) {
             return $this->json(['message' => 'Nurse con el user ' . $user . ' no encontrado'], Response::HTTP_NOT_FOUND);

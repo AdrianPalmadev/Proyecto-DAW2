@@ -16,11 +16,11 @@ class NurseRepository extends ServiceEntityRepository
         parent::__construct($registry, Nurse::class);
     }
 
-    public function findByUser(string $usuario): ?Nurse
+    public function findByName(string $name): ?Nurse
     {
         return $this->createQueryBuilder('n')
             ->andWhere('n.user = :u')
-            ->setParameter('u', $usuario)
+            ->setParameter('u', $name)
             ->getQuery()
             ->getOneOrNullResult();
     }
