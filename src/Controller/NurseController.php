@@ -58,10 +58,10 @@ final class NurseController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/user/{user}', name: 'app_nurse_findbyuser', methods: ['GET'])]
-    public function findByUser(string $user, NurseRepository $repo): JsonResponse
+    #[Route('/name/{name}', name: 'app_nurse_findbyuser', methods: ['GET'])]
+    public function findByUser(string $name, NurseRepository $repo): JsonResponse
     {
-        $nurse = $repo->findByUser($user);
+        $nurse = $repo->findByUser($name);
 
         if (!$nurse) {
             return $this->json(['message' => 'No encontrado'], Response::HTTP_NOT_FOUND);
