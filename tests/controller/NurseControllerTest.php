@@ -112,39 +112,39 @@ class NurseControllerTest extends WebTestCase
         $this->assertSame('u2', $resp[1]['usuario']);
     }
 
-    public function testFindByUserNotFound()
+    public function testFindByNameNotFound()
     {
         $client = static::createClient();
 
         $repo = $this->createMock(NurseRepository::class);
         $repo->expects($this->once())
-            ->method('findByUser')
+            ->method('findByName')
             ->with('noexist')
             ->willReturn(null);
 
         $this->replaceRepoMock($repo);
 
-        $client->request('GET', '/nurse/user/noexist');
+        $client->request('GET', '/nurse/name/noexist');
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame('No encontrado', $resp['message']);
     }
 
-    public function testFindByUserSuccess()
+    public function testFindByNameSuccess()
     {
         $client = static::createClient();
 
         $nurse = $this->mockNurse(['id' => 7, 'usuario' => 'u7', 'nombre' => 'N7']);
         $repo = $this->createMock(NurseRepository::class);
         $repo->expects($this->once())
-            ->method('findByUser')
+            ->method('findByName')
             ->with('u7')
             ->willReturn($nurse);
 
         $this->replaceRepoMock($repo);
 
-        $client->request('GET', '/nurse/user/u7');
+        $client->request('GET', '/nurse/name/u7');
 
         $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
@@ -160,7 +160,7 @@ class NurseControllerTest extends WebTestCase
         $repo->expects($this->never())->method('create'); // no debe llamarse
         $this->replaceRepoMock($repo);
 
-        $client->request('POST', '/nurse/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('POST', '/nurse/create', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'name' => 'Apenas', // faltan usuario, password, email
         ]));
 
@@ -179,7 +179,7 @@ class NurseControllerTest extends WebTestCase
 
         $repo = $this->createMock(NurseRepository::class);
         $repo->expects($this->once())
-            ->method('findByUser')
+            ->method('findByName')
             ->with('uexists')
             ->willReturn($this->mockNurse(['usuario' => 'uexists']));
 
@@ -187,7 +187,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->replaceRepoMock($repo);
 
-        $client->request('POST', '/nurse/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('POST', '/nurse/create', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'name' => 'T',
             'usuario' => 'uexists',
             'password' => 1111,
@@ -204,7 +204,7 @@ class NurseControllerTest extends WebTestCase
         $client = static::createClient();
 
         $repo = $this->createMock(NurseRepository::class);
-        $repo->expects($this->once())->method('findByUser')->willReturn(null);
+        $repo->expects($this->once())->method('findByName')->willReturn(null);
         $repo->expects($this->once())->method('create')->with($this->isInstanceOf(Nurse::class));
 
         $this->replaceRepoMock($repo);
@@ -217,7 +217,7 @@ class NurseControllerTest extends WebTestCase
             'working' => true,
         ];
 
-        $client->request('POST', '/nurse/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($payload));
+        $client->request('POST', '/nurse/create', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($payload));
 
         $this->assertSame(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
@@ -230,13 +230,13 @@ class NurseControllerTest extends WebTestCase
 
         $repo = $this->createMock(NurseRepository::class);
         $repo->expects($this->once())
-            ->method('findByUser')
+            ->method('findByName')
             ->with('ghost')
             ->willReturn(null);
 
         $this->replaceRepoMock($repo);
 
-        $client->request('DELETE', '/nurse/delete', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('DELETE', '/nurse/remove', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'usuario' => 'ghost',
         ]));
 
@@ -252,14 +252,14 @@ class NurseControllerTest extends WebTestCase
         $nurse = $this->mockNurse(['nombre' => 'ToDelete', 'usuario' => 'todel']);
         $repo = $this->createMock(NurseRepository::class);
         $repo->expects($this->once())
-            ->method('findByUser')
+            ->method('findByName')
             ->with('todel')
             ->willReturn($nurse);
         $repo->expects($this->once())->method('delete')->with($nurse);
 
         $this->replaceRepoMock($repo);
 
-        $client->request('DELETE', '/nurse/delete', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('DELETE', '/nurse/remove', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'usuario' => 'todel',
         ]));
 
@@ -274,13 +274,13 @@ class NurseControllerTest extends WebTestCase
 
         $repo = $this->createMock(NurseRepository::class);
         $repo->expects($this->once())
-            ->method('findByUser')
-            ->with('noedit')
+            ->method('findById')
+            ->with(999)
             ->willReturn(null);
 
         $this->replaceRepoMock($repo);
 
-        $client->request('PUT', '/nurse/edit/noedit', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('PUT', '/nurse/edit/999', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'name' => 'X'
         ]));
 
@@ -293,17 +293,17 @@ class NurseControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $nurse = $this->mockNurse(['usuario' => 'editu', 'nombre' => 'OldName']);
+        $nurse = $this->mockNurse(['id' => 5, 'usuario' => 'editu', 'nombre' => 'OldName']);
         $repo = $this->createMock(NurseRepository::class);
         $repo->expects($this->once())
-            ->method('findByUser')
-            ->with('editu')
+            ->method('findById')
+            ->with(5)
             ->willReturn($nurse);
         $repo->expects($this->once())->method('edit')->with($nurse);
 
         $this->replaceRepoMock($repo);
 
-        $client->request('PUT', '/nurse/edit/editu', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('PUT', '/nurse/edit/5', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'name' => 'NewName'
         ]));
 
