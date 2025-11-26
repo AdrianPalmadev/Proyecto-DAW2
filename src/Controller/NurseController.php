@@ -107,12 +107,9 @@ final class NurseController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route(path: '/remove', name: 'app_nurse_remove', methods: ['DELETE'])]
-    public function remove(Request $request, NurseRepository $repo): JsonResponse
+    #[Route(path: '/{user}', name: 'app_nurse_remove', methods: ['DELETE'])]
+    public function remove(String $user, NurseRepository $repo): JsonResponse
     {
-        $data = $request->toArray();
-
-        $user = $data['usuario'] ?? null;
 
         $nurse = $repo->findByName($user);
 
