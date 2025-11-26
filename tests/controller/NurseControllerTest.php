@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 class NurseControllerTest extends WebTestCase
 {
     /**
-     * Crea un mock de Nurse con valores por defecto.
-     * Ahora getPassword() devuelve un int.
+     * Creates a Nurse mock with default values.
+     * getPassword() now returns an integer.
      */
     private function mockNurse(array $data = []): Nurse
     {
@@ -20,7 +20,6 @@ class NurseControllerTest extends WebTestCase
         $nurse->method('getUser')->willReturn($data['usuario'] ?? 'jdoe');
         $nurse->method('getName')->willReturn($data['nombre'] ?? 'John Doe');
         $nurse->method('getEmail')->willReturn($data['email'] ?? 'jdoe@example.com');
-        // password es int ahora
         $nurse->method('getPassword')->willReturn($data['password'] ?? 1234);
         $nurse->method('isWorking')->willReturn($data['working'] ?? false);
         return $nurse;
@@ -38,7 +37,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('usuario y password obligatorios', $resp['message']);
+        $this->assertSame('username and password are required', $resp['message']);
     }
 
     public function testLoginNotFound()
@@ -46,7 +45,6 @@ class NurseControllerTest extends WebTestCase
         $client = static::createClient();
 
         $repo = $this->createMock(NurseRepository::class);
-        // password como int en el mock esperado
         $repo->expects($this->once())
             ->method('login')
             ->with('user1', 9999)
@@ -56,12 +54,12 @@ class NurseControllerTest extends WebTestCase
 
         $client->request('POST', '/nurse/login', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'usuario' => 'user1',
-            'password' => 9999, // número, no string
+            'password' => 9999,
         ]));
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('No encontrado o credenciales incorrectas', $resp['message']);
+        $this->assertSame('Not found or invalid credentials', $resp['message']);
     }
 
     public function testLoginSuccess()
@@ -128,7 +126,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('No encontrado', $resp['message']);
+        $this->assertSame('Not found', $resp['message']);
     }
 
     public function testFindByNameSuccess()
@@ -156,21 +154,19 @@ class NurseControllerTest extends WebTestCase
     public function testRegisterMissingFields()
     {
         $client = static::createClient();
+
         $repo = $this->createMock(NurseRepository::class);
-        $repo->expects($this->never())->method('create'); // no debe llamarse
+        $repo->expects($this->never())->method('create');
+
         $this->replaceRepoMock($repo);
 
         $client->request('POST', '/nurse/create', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
-            'name' => 'Apenas', // faltan usuario, password, email
+            'name' => 'Test',
         ]));
 
-        $this->assertSame(
-            Response::HTTP_BAD_REQUEST,
-            $client->getResponse()->getStatusCode(),
-            $client->getResponse()->getContent() // <-- ayuda mostrando la excepción
-        );
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('Faltan campos obligatorios', $resp['message']);
+        $this->assertSame('Missing required fields', $resp['message']);
     }
 
     public function testRegisterUserExists()
@@ -196,7 +192,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('El usuario ya existe', $resp['message']);
+        $this->assertSame('User already exists', $resp['message']);
     }
 
     public function testRegisterSuccess()
@@ -212,7 +208,7 @@ class NurseControllerTest extends WebTestCase
         $payload = [
             'name' => 'New',
             'usuario' => 'newuser',
-            'password' => 2222, // int
+            'password' => 2222,
             'email' => 'new@example.com',
             'working' => true,
         ];
@@ -221,7 +217,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('Nurse creada correctamente', $resp['message']);
+        $this->assertSame('Nurse successfully created', $resp['message']);
     }
 
     public function testDeleteNotFound()
@@ -242,7 +238,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertStringContainsString('no encontrado', $resp['message']);
+        $this->assertStringContainsString('not found', $resp['message']);
     }
 
     public function testDeleteSuccess()
@@ -265,7 +261,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertStringContainsString('Se ha eliminado correctamente', $resp['message']);
+        $this->assertStringContainsString('Successfully removed', $resp['message']);
     }
 
     public function testEditNotFound()
@@ -286,7 +282,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertStringContainsString('no encontrado', $resp['message']);
+        $this->assertStringContainsString('not found', $resp['message']);
     }
 
     public function testEditSuccess()
@@ -309,6 +305,6 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('Nurse actualizado correctamente', $resp['message']);
+        $this->assertSame('Nurse successfully updated', $resp['message']);
     }
 }

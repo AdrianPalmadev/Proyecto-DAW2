@@ -21,13 +21,13 @@ final class NurseController extends AbstractController
         $password = $data['password'] ?? null;
 
         if (empty($usuario) || empty($password)) {
-            return $this->json(['message' => 'usuario y password obligatorios'], Response::HTTP_BAD_REQUEST);
+            return $this->json(['message' => 'username and password are required'], Response::HTTP_BAD_REQUEST);
         }
 
         $nurse = $repo->login($usuario, $password);
 
         if (!$nurse) {
-            return $this->json(['message' => 'No encontrado o credenciales incorrectas'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Not found or invalid credentials'], Response::HTTP_NOT_FOUND);
         }
 
         return $this->json([
@@ -37,11 +37,10 @@ final class NurseController extends AbstractController
         ]);
     }
 
-
     #[Route('/index', name: 'app_nurse_getall', methods: ['GET'])]
     public function getAll(NurseRepository $repo)
     {
-        $nurses = $repo->getAll(); // o findAll() si usas Doctrine directamente
+        $nurses = $repo->getAll();
 
         $data = [];
 
@@ -64,7 +63,7 @@ final class NurseController extends AbstractController
         $nurse = $repo->findByName($name);
 
         if (!$nurse) {
-            return $this->json(['message' => 'No encontrado'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
 
         return $this->json([
@@ -86,11 +85,11 @@ final class NurseController extends AbstractController
         $working = $data['working'] ?? false;
 
         if (!$name || !$usuario || !$password || !$email) {
-            return $this->json(['message' => 'Faltan campos obligatorios'], Response::HTTP_BAD_REQUEST);
+            return $this->json(['message' => 'Missing required fields'], Response::HTTP_BAD_REQUEST);
         }
 
         if ($repo->findByName($usuario)) {
-            return $this->json(['message' => 'El usuario ya existe'], Response::HTTP_BAD_REQUEST);
+            return $this->json(['message' => 'User already exists'], Response::HTTP_BAD_REQUEST);
         }
 
         $nurse = new \App\Entity\Nurse();
@@ -103,7 +102,7 @@ final class NurseController extends AbstractController
         $repo->create($nurse);
 
         return $this->json([
-            'message' => 'Nurse creada correctamente',
+            'message' => 'Nurse successfully created',
             "name:" => $nurse->getName()
         ], Response::HTTP_CREATED);
     }
@@ -111,7 +110,6 @@ final class NurseController extends AbstractController
     #[Route(path: '/remove', name: 'app_nurse_remove', methods: ['DELETE'])]
     public function remove(Request $request, NurseRepository $repo): JsonResponse
     {
-
         $data = $request->toArray();
 
         $user = $data['usuario'] ?? null;
@@ -119,12 +117,12 @@ final class NurseController extends AbstractController
         $nurse = $repo->findByName($user);
 
         if (!$nurse) {
-            return $this->json(['message' => 'Nurse con el user ' . $user . ' no encontrado'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Nurse with user ' . $user . ' not found'], Response::HTTP_NOT_FOUND);
         }
 
         $repo->delete($nurse);
 
-        return $this->json(['message' => 'Se ha eliminado correctamente a ' . $nurse->getName()], Response::HTTP_OK);
+        return $this->json(['message' => 'Successfully removed ' . $nurse->getName()], Response::HTTP_OK);
     }
 
     #[Route(path: '/edit/{id}', name: 'app_nurse_edit', methods: ['PUT'])]
@@ -133,7 +131,7 @@ final class NurseController extends AbstractController
         $nurse = $repo->findById($id);
 
         if (!$nurse) {
-            return $this->json(['message' => 'Nurse con el id ' . $id . ' no encontrado'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Nurse with id ' . $id . ' not found'], Response::HTTP_NOT_FOUND);
         }
 
         $data = $request->toArray();
@@ -143,6 +141,7 @@ final class NurseController extends AbstractController
         $password = $data['password'] ?? $nurse->getPassword();
         $email = $data['email'] ?? $nurse->getEmail();
         $working = $data['working'] ?? $nurse->isWorking();
+
         $nurse->setName($name);
         $nurse->setUser($usuario);
         $nurse->setPassword($password);
@@ -151,6 +150,6 @@ final class NurseController extends AbstractController
 
         $repo->edit($nurse);
 
-        return $this->json(['message' => 'Nurse actualizado correctamente']);
+        return $this->json(['message' => 'Nurse successfully updated']);
     }
 }
