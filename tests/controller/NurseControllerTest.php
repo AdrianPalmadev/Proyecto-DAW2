@@ -9,10 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class NurseControllerTest extends WebTestCase
 {
-    /**
-     * Creates a Nurse mock with default values.
-     * getPassword() now returns an integer.
-     */
     private function mockNurse(array $data = []): Nurse
     {
         $nurse = $this->createMock(Nurse::class);
@@ -68,6 +64,7 @@ class NurseControllerTest extends WebTestCase
 
         $nurse = $this->mockNurse(['id' => 42, 'usuario' => 'user1', 'nombre' => 'Nombre', 'password' => 5555]);
         $repo = $this->createMock(NurseRepository::class);
+
         $repo->expects($this->once())
             ->method('login')
             ->with('user1', 5555)
@@ -82,6 +79,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
+
         $this->assertSame(42, $resp['id']);
         $this->assertSame('user1', $resp['usuario']);
         $this->assertSame('Nombre', $resp['nombre']);
@@ -105,6 +103,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
+
         $this->assertCount(2, $resp);
         $this->assertSame('u1', $resp[0]['usuario']);
         $this->assertSame('u2', $resp[1]['usuario']);
@@ -135,6 +134,7 @@ class NurseControllerTest extends WebTestCase
 
         $nurse = $this->mockNurse(['id' => 7, 'usuario' => 'u7', 'nombre' => 'N7']);
         $repo = $this->createMock(NurseRepository::class);
+
         $repo->expects($this->once())
             ->method('findByName')
             ->with('u7')
@@ -146,6 +146,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
+
         $this->assertSame(7, $resp['id']);
         $this->assertSame('u7', $resp['usuario']);
         $this->assertSame('N7', $resp['nombre']);
@@ -217,6 +218,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->assertSame(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
+
         $this->assertSame('Nurse successfully created', $resp['message']);
     }
 
@@ -232,36 +234,38 @@ class NurseControllerTest extends WebTestCase
 
         $this->replaceRepoMock($repo);
 
-        $client->request('DELETE', '/nurse/remove', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
-            'usuario' => 'ghost',
-        ]));
+        // Ruta correcta: /nurse/{nurse}
+        $client->request('DELETE', '/nurse/ghost');
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertStringContainsString('not found', $resp['message']);
+        $this->assertSame('Nurse with user ghost not found', $resp['message']);
     }
 
     public function testDeleteSuccess()
     {
         $client = static::createClient();
 
-        $nurse = $this->mockNurse(['nombre' => 'ToDelete', 'usuario' => 'todel']);
+        $nurse = $this->mockNurse(['usuario' => 'todel', 'nombre' => 'ToDelete']);
         $repo = $this->createMock(NurseRepository::class);
+
         $repo->expects($this->once())
             ->method('findByName')
             ->with('todel')
             ->willReturn($nurse);
-        $repo->expects($this->once())->method('delete')->with($nurse);
+
+        $repo->expects($this->once())
+            ->method('delete')
+            ->with($nurse);
 
         $this->replaceRepoMock($repo);
 
-        $client->request('DELETE', '/nurse/remove', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
-            'usuario' => 'todel',
-        ]));
+        // Ruta correcta: /nurse/{nurse}
+        $client->request('DELETE', '/nurse/todel');
 
         $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $resp = json_decode($client->getResponse()->getContent(), true);
-        $this->assertStringContainsString('Successfully removed', $resp['message']);
+        $this->assertSame('Successfully removed ToDelete', $resp['message']);
     }
 
     public function testEditNotFound()
@@ -291,11 +295,15 @@ class NurseControllerTest extends WebTestCase
 
         $nurse = $this->mockNurse(['id' => 5, 'usuario' => 'editu', 'nombre' => 'OldName']);
         $repo = $this->createMock(NurseRepository::class);
+
         $repo->expects($this->once())
             ->method('findById')
             ->with(5)
             ->willReturn($nurse);
-        $repo->expects($this->once())->method('edit')->with($nurse);
+
+        $repo->expects($this->once())
+            ->method('edit')
+            ->with($nurse);
 
         $this->replaceRepoMock($repo);
 
