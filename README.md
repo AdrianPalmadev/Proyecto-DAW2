@@ -45,7 +45,7 @@ This ensures code quality and allows early detection of issues during developmen
 ## Database
 
 ### Design
-The logical structure of the database was designed using MySQL Workbench, defining the schema required to store and manage nurses.
+The logical structure of the database was designed using MySQL Workbench, defining the schema required to manage nurses.
 
 ### Implementation with Doctrine
 After configuring Doctrine, the entities and migrations were generated to synchronize the database model with Symfony.  
