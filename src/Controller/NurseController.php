@@ -107,14 +107,14 @@ final class NurseController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route(path: '/{user}', name: 'app_nurse_remove', methods: ['DELETE'])]
-    public function remove(String $user, NurseRepository $repo): JsonResponse
+    #[Route(path: '/{nurse}', name: 'app_nurse_remove', methods: ['DELETE'])]
+    public function remove(String $nurse, NurseRepository $repo): JsonResponse
     {
 
-        $nurse = $repo->findByName($user);
+        $nurse = $repo->findByName($nurse);
 
         if (!$nurse) {
-            return $this->json(['message' => 'Nurse with user ' . $user . ' not found'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Nurse with user ' . $nurse . ' not found'], Response::HTTP_NOT_FOUND);
         }
 
         $repo->delete($nurse);
