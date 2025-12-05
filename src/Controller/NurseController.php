@@ -122,7 +122,7 @@ final class NurseController extends AbstractController
         return $this->json(['message' => 'Successfully removed ' . $foundNurse->getName()], Response::HTTP_OK);
     }
 
-    #[Route(path: '/edit/{id}', name: 'app_nurse_edit', methods: ['PUT'])]
+    #[Route(path: '/{id}', name: 'app_nurse_edit', methods: ['PUT'])]
     public function edit(Request $request, int $id, NurseRepository $repo)
     {
         $nurse = $repo->findById($id);
