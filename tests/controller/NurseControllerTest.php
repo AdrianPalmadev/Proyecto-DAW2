@@ -280,7 +280,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->replaceRepoMock($repo);
 
-        $client->request('PUT', '/nurse/edit/999', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('PUT', '/nurse/999', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'name' => 'X'
         ]));
 
@@ -307,7 +307,7 @@ class NurseControllerTest extends WebTestCase
 
         $this->replaceRepoMock($repo);
 
-        $client->request('PUT', '/nurse/edit/5', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $client->request('PUT', '/nurse/5', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'name' => 'NewName'
         ]));
 
