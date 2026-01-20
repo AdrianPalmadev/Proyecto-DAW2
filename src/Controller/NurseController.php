@@ -70,24 +70,31 @@ final class NurseController extends AbstractController
     #[Route('/name/{name}', methods: ['GET'])]
     public function findByName(string $name, NurseRepository $repo): JsonResponse
     {
-        $nurse = $repo->findByName($name);
+        $nurses = $repo->findByName($name);
 
-        if (!$nurse) {
+        if (empty($nurses)) {
             return $this->json(
-                ['message' => 'Not found'],
+                ['message' => 'No nurses found'],
                 Response::HTTP_NOT_FOUND
             );
         }
 
-        return $this->json([
-            'id' => $nurse->getId(),
-            'user' => $nurse->getUser(),
-            'name' => $nurse->getName(),
-            'email' => $nurse->getEmail(),
-            'working' => $nurse->isWorking(),
-            'imageUrl' => $nurse->getImageUrl(),
-        ]);
+        $data = [];
+
+        foreach ($nurses as $nurse) {
+            $data[] = [
+                'id' => $nurse->getId(),
+                'user' => $nurse->getUser(),
+                'name' => $nurse->getName(),
+                'email' => $nurse->getEmail(),
+                'working' => $nurse->isWorking(),
+                'imageUrl' => $nurse->getImageUrl(),
+            ];
+        }
+
+        return $this->json($data);
     }
+
 
     #[Route('/create', methods: ['POST'])]
     public function create(Request $request, NurseRepository $repo): JsonResponse
@@ -108,7 +115,7 @@ final class NurseController extends AbstractController
             );
         }
 
-        if ($repo->findByName($user)) {
+        if ($repo->findByUser($user)) {
             return $this->json(
                 ['message' => 'User already exists'],
                 Response::HTTP_BAD_REQUEST

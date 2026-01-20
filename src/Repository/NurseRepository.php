@@ -16,14 +16,16 @@ class NurseRepository extends ServiceEntityRepository
         parent::__construct($registry, Nurse::class);
     }
 
-    public function findByName(string $name): ?Nurse
+    public function findByName(string $name): array
     {
         return $this->createQueryBuilder('n')
-            ->andWhere('n.user = :u')
-            ->setParameter('u', $name)
+            ->andWhere('LOWER(n.name) LIKE LOWER(:name)')
+            ->setParameter('name', '%' . $name . '%')
+            ->orderBy('n.name', 'ASC')
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
+
     public function findById(int $id): ?Nurse
     {
         return $this->createQueryBuilder('n')
@@ -32,6 +34,16 @@ class NurseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findByUser(string $user): ?Nurse
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.user = :u')
+            ->setParameter('u', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 
     public function getAll(): array
     {
