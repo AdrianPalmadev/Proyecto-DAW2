@@ -28,6 +28,9 @@ class Nurse
     #[ORM\Column]
     private ?bool $working = null;
 
+    #[ORM\Column(name: 'image_url', length: 255, nullable: true)]
+    private ?string $imageUrl = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -41,7 +44,6 @@ class Nurse
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -53,7 +55,6 @@ class Nurse
     public function setUser(string $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -65,7 +66,6 @@ class Nurse
     public function setPassword(int $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -77,7 +77,6 @@ class Nurse
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -89,7 +88,17 @@ class Nurse
     public function setWorking(bool $working): static
     {
         $this->working = $working;
+        return $this;
+    }
 
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): static
+    {
+        $this->imageUrl = $imageUrl;
         return $this;
     }
 }
