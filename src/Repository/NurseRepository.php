@@ -53,11 +53,11 @@ class NurseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function login($usuario, $password): ?Nurse
+    public function login($email, $password): ?Nurse
     {
         $nurse = $this->createQueryBuilder('n')
             ->andWhere('n.user = :u')
-            ->setParameter('u', $usuario)
+            ->setParameter('u', $email)
             ->getQuery()
             ->getOneOrNullResult();
 
