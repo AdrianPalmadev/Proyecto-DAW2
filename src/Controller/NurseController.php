@@ -18,21 +18,21 @@ final class NurseController extends AbstractController
     {
         $data = $request->toArray();
 
-        $user = $data['user'] ?? null;
+        $email = $data['email'] ?? null;
         $password = $data['password'] ?? null;
 
-        if (!$user || !$password) {
+        if (!$email || !$password) {
             return $this->json(
-                ['message' => 'user and password are required'],
+                ['error' => 'Email and password are missing.'],
                 Response::HTTP_BAD_REQUEST
             );
         }
 
-        $nurse = $repo->login($user, $password);
+        $nurse = $repo->login($email, $password);
 
         if (!$nurse) {
             return $this->json(
-                ['message' => 'Not found or invalid credentials'],
+                ['message' => 'Invalid email or password.'],
                 Response::HTTP_NOT_FOUND
             );
         }
@@ -117,7 +117,7 @@ final class NurseController extends AbstractController
 
         if ($repo->findByUser($user)) {
             return $this->json(
-                ['message' => 'User already exists'],
+                ['message' => 'There was an error processing your request.'],
                 Response::HTTP_BAD_REQUEST
             );
         }
