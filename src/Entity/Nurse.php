@@ -20,7 +20,7 @@ class Nurse
     private ?string $user = null;
 
     #[ORM\Column]
-    private ?int $password = null;
+    private ?string $password = null;
 
     #[ORM\Column(length: 100)]
     private ?string $email = null;
@@ -58,12 +58,12 @@ class Nurse
         return $this;
     }
 
-    public function getPassword(): ?int
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(int $password): static
+    public function setPassword(string $password): static
     {
         $this->password = $password;
         return $this;
