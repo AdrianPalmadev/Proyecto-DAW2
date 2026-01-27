@@ -44,6 +44,15 @@ class NurseRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByEmail(string $email): ?Nurse
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.email = :e')
+            ->setParameter('e', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 
     public function getAll(): array
     {

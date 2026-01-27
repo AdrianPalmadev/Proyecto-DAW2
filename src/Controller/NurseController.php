@@ -32,7 +32,7 @@ final class NurseController extends AbstractController
 
         if (!$nurse) {
             return $this->json(
-                ['message' => 'Invalid email or password.'],
+                ['error' => 'Invalid email or password.'],
                 Response::HTTP_NOT_FOUND
             );
         }
@@ -74,7 +74,7 @@ final class NurseController extends AbstractController
 
         if (empty($nurses)) {
             return $this->json(
-                ['message' => 'No nurses found'],
+                ['error' => 'No nurses found'],
                 Response::HTTP_NOT_FOUND
             );
         }
@@ -110,14 +110,14 @@ final class NurseController extends AbstractController
 
         if (!$name || !$user || !$password || !$email) {
             return $this->json(
-                ['message' => 'Missing required fields'],
+                ['error' => 'Missing required fields'],
                 Response::HTTP_BAD_REQUEST
             );
         }
 
-        if ($repo->findByUser($user)) {
+        if ($repo->findByEmail($email)) {
             return $this->json(
-                ['message' => 'There was an error processing your request.'],
+                ['error' => 'An account may already exist with this email, please try logging in.'],
                 Response::HTTP_BAD_REQUEST
             );
         }
@@ -149,7 +149,7 @@ final class NurseController extends AbstractController
 
         if (!$nurse) {
             return $this->json(
-                ['message' => 'Nurse not found'],
+                ['error' => 'Nurse not found'],
                 Response::HTTP_NOT_FOUND
             );
         }
